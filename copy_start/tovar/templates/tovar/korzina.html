@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Корзина</title>
+</head>
+<body>
+    <h1>Корзина пользователя: {{ request.user.username }}</h1>
+
+    {% if messages %}
+        <ul style="color: red;">
+            {% for message in messages %}
+                <li>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if items %}
+        <table border="1" cellpadding="5">
+            <tr>
+                <th>Товар</th>
+                <th>Цена</th>
+                <th>Количество</th>
+                <th>Действия</th>
+            </tr>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.product.price }} руб.</td>
+                <td>
+                    <form action="{% url 'decrease_cart_item' item.id %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit">-</button>
+                    </form>
+                    {{ item.quantity }}
+                    <form action="{% url 'increase_cart_item' item.id %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit">+</button>
+                    </form>
+                </td>
+                <td>
+                    <form action="{% url 'remove_from_cart' item.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit">Удалить</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>Ваша корзина пуста.</p>
+    {% endif %}
+
+    <br>
+    <a href="{% url 'catalog' %}">В каталог</a> | <a href="{% url 'home' %}">На главную</a>
+</body>
+</html>

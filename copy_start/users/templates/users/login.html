@@ -1,0 +1,19 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Вход</title>
+    <link rel="stylesheet" href="{% static 'tovar/style.css' %}">
+</head>
+<body>
+    <h1>Вход в систему</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Войти</button>
+    </form>
+    <br>
+    <a href="{% url 'register' %}">Нет аккаунта? Зарегистрироваться</a> | <a href="{% url 'home' %}">На главную</a>
+</body>
+</html>

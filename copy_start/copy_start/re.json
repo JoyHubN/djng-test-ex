@@ -1,0 +1,71 @@
+{
+    "ok":true,
+    "posts":{
+        "count":10,
+        "user_posts":[
+            
+        ]
+    }
+}
+
+
+POST http 127.0.0.1/post
+
+{
+    "user":{
+        "username":"богдан чучело",
+    },
+    "post":{
+        "title":"ugyuv",
+        "description": "usdb",
+        "media":{
+            "photos":[
+                "http://...",
+            ]
+        }
+    }
+}
+
+
+
+POST http 127.0.0.1/api/settings/privacy/?all_view=true&comments=true
+GET http 127.0.0.1/api/post?offset=10
+GET http 127.0.0.1/api/post?id=1
+
+
+GET http 127.0.0.1/post?id=1/comments
+
+
+
+{
+    "user":{
+        "username":"богдан чучело",
+    },
+    "posts":{
+        [
+          {
+            "id":1,
+            "title":"ugyuv",
+            "description": "usdb",
+            "media":{
+                "photos":[
+                    "http://...",
+                ]
+            },
+            "likes":90,
+            "comments":10
+          },
+          {
+            "id":2,
+            "title":"ugyuv",
+            "description": "usdb",
+            "media":{
+                "photos":[
+                    "http://...",
+                ]
+            }
+          },
+        "count": 10
+        ]
+    }
+}

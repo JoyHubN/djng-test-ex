@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>О нас</title>
+</head>
+<body>
+    <h1>Страница: О нас</h1>
+    <a href="{% url 'home' %}">На главную</a>
+
+    <h2>Последние 5 добавленных товаров</h2>
+    {% if latest_products %}
+        <ul>
+            {% for product in latest_products %}
+                <li>
+                    <strong>{{ product.name }}</strong> — {{ product.price }} руб. (Остаток: {{ product.count }} шт.)
+                    <p>{{ product.description|default:"Нет описания" }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Товары пока не добавлены.</p>
+    {% endif %}
+</body>
+</html>

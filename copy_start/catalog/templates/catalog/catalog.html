@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Каталог товаров</title>
+</head>
+<body>
+    <h1>Каталог</h1>
+    <ul>
+        {% for product in products %}
+            <li>
+                <a href="{% url 'tovar_detail' product.id %}">{{ product.name }}</a> - {{ product.price }} руб. - {{ product.count }} шт
+            </li>
+        {% empty %}
+            <li>Товаров пока нет.</li>
+        {% endfor %}
+    </ul>
+    <br>
+    <a href="{% url 'home' %}">На главную</a>
+</body>
+</html>
