@@ -4,32 +4,37 @@
 <head>
     <meta charset="UTF-8">
     <title>Корзина и Ваши заказы</title>
+    <link rel="stylesheet" href="{% static 'tovar/style.css' %}">
 </head>
 <body>
-    <div>
-        <nav>
-            <a href="{% url 'home' %}">О нас</a> | 
-            <a href="{% url 'catalog' %}">Каталог</a> | 
-            <a href="{% url 'where_find_us' %}">Где нас найти?</a>
-            {% if request.user.is_authenticated %}
-                | <a href="{% url 'korzina' %}">Корзина</a>
-                | <a href="{% url 'logout' %}">Выход</a>
-            {% endif %}
-        </nav>
-        <hr>
+    <header>
+        <div class="header-content">
+            <a href="{% url 'home' %}" class="logo">Copy Star</a>
+            <nav>
+                <a href="{% url 'about' %}">О нас</a>
+                <a href="{% url 'catalog' %}">Каталог</a>
+                <a href="{% url 'where_find_us' %}">Где нас найти?</a>
+                {% if request.user.is_authenticated %}
+                    <a href="{% url 'korzina' %}" class="active">Корзина</a>
+                    <a href="{% url 'logout' %}">Выход</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
 
+    <div class="container">
         <h1>Корзина пользователя: {{ request.user.username }}</h1>
 
         {% if messages %}
-            <ul>
+            <ul class="messages">
                 {% for message in messages %}
-                    <li>{{ message }}</li>
+                    <li {% if message.tags %}class="{{ message.tags }}"{% endif %}>{{ message }}</li>
                 {% endfor %}
             </ul>
         {% endif %}
 
         {% if items %}
-            <table border="1" cellpadding="5">
+            <table>
                 <tr>
                     <th>Товар</th>
                     <th>Цена</th>
@@ -38,44 +43,46 @@
                 </tr>
                 {% for item in items %}
                 <tr>
-                    <td>{{ item.product.name }}</td>
+                    <td><strong>{{ item.product.name }}</strong></td>
                     <td>{{ item.product.price }} руб.</td>
                     <td>
-                        <form action="{% url 'decrease_cart_item' item.id %}" method="post" style="display:inline;">
-                            {% csrf_token %}
-                            <button type="submit">-</button>
-                        </form>
-                        {{ item.quantity }}
-                        <form action="{% url 'increase_cart_item' item.id %}" method="post" style="display:inline;">
-                            {% csrf_token %}
-                            <button type="submit">+</button>
-                        </form>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <form action="{% url 'decrease_cart_item' item.id %}" method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" style="padding: 4px 10px;">-</button>
+                            </form>
+                            <span style="font-weight: 600;">{{ item.quantity }}</span>
+                            <form action="{% url 'increase_cart_item' item.id %}" method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="submit" style="padding: 4px 10px;">+</button>
+                            </form>
+                        </div>
                     </td>
                     <td>
                         <form action="{% url 'remove_from_cart' item.id %}" method="post">
                             {% csrf_token %}
-                            <button type="submit">Удалить</button>
+                            <button type="submit" class="btn-danger" style="padding: 6px 12px; font-size: 14px;">Удалить</button>
                         </form>
                     </td>
                 </tr>
                 {% endfor %}
             </table>
 
-            <h3>Оформление заказа</h3>
-            <form method="post" action="{% url 'checkout_order' %}">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit">Сформировать заказ</button>
-            </form>
+            <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 24px; margin-top: 30px; max-width: 500px;">
+                <h3 style="margin-bottom: 16px;">Оформление заказа</h3>
+                <form method="post" action="{% url 'checkout_order' %}">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" style="width: 100%; background: var(--success);">Сформировать заказ</button>
+                </form>
+            </div>
         {% else %}
             <p>Ваша корзина пуста.</p>
         {% endif %}
 
-        <hr>
-
-        <h2>Ваши заказы</h2>
+        <h2 style="margin-top: 50px;">Ваши заказы</h2>
         {% if orders %}
-            <table border="1" cellpadding="5">
+            <table>
                 <tr>
                     <th>ID заказа</th>
                     <th>Дата / Время</th>
@@ -85,13 +92,17 @@
                 </tr>
                 {% for order in orders %}
                 <tr>
-                    <td>#{{ order.id }}</td>
+                    <td><strong>#{{ order.id }}</strong></td>
                     <td>{{ order.created_at|date:"Y-m-d H:i" }}</td>
-                    <td>{{ order.get_status_display }}</td>
                     <td>
-                        <ul>
+                        <span style="font-weight: 600; color: {% if order.status == 'confirmed' %}var(--success){% elif order.status == 'canceled' %}var(--danger){% else %}var(--primary){% endif %};">
+                            {{ order.get_status_display }}
+                        </span>
+                    </td>
+                    <td>
+                        <ul style="list-style: none; padding: 0;">
                             {% for o_item in order.items.all %}
-                                <li>{{ o_item.product_name }} — {{ o_item.quantity }} шт. по {{ o_item.price }} руб.</li>
+                                <li style="font-size: 14px; padding: 2px 0;">{{ o_item.product_name }} — {{ o_item.quantity }} шт. по {{ o_item.price }} руб.</li>
                             {% endfor %}
                         </ul>
                     </td>
@@ -99,10 +110,10 @@
                         {% if order.status == 'new' %}
                             <form action="{% url 'delete_order' order.id %}" method="post">
                                 {% csrf_token %}
-                                <button type="submit">Удалить</button>
+                                <button type="submit" class="btn-danger" style="padding: 6px 12px; font-size: 14px;">Удалить</button>
                             </form>
                         {% else %}
-                            <span>Нельзя удалить</span>
+                            <span style="color: var(--text-muted); font-size: 14px;">Недоступно</span>
                         {% endif %}
                     </td>
                 </tr>
@@ -111,9 +122,6 @@
         {% else %}
             <p>У вас пока нет заказов.</p>
         {% endif %}
-
-        <br>
-        <a href="{% url 'catalog' %}">В каталог</a> | <a href="{% url 'home' %}">На главную</a>
     </div>
 </body>
 </html>
