@@ -17,6 +17,7 @@ Including another URLconf
 
 from django.urls import include, path
 from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path
 from tovar.views import (
@@ -26,7 +27,9 @@ from tovar.views import (
     add_to_cart_view, 
     increase_cart_item_view, 
     decrease_cart_item_view, 
-    remove_from_cart_view
+    remove_from_cart_view,
+    checkout_order_view,
+    delete_order_view
 )
 from about.views import about_view
 from where_find_us.views import where_find_us_view
@@ -45,14 +48,15 @@ urlpatterns = [
     path('korzina/increase/<int:item_id>/', increase_cart_item_view, name='increase_cart_item'),
     path('korzina/decrease/<int:item_id>/', decrease_cart_item_view, name='decrease_cart_item'),
     path('korzina/remove/<int:item_id>/', remove_from_cart_view, name='remove_from_cart'),
+    path('korzina/checkout/', checkout_order_view, name='checkout_order'),
+    path('korzina/order/delete/<int:order_id>/', delete_order_view, name='delete_order'),
     path('register/', register_view, name='register'),
     path('login/', login_view, name='login'),
     path('logout/', logout_view, name='logout'),
 ]
 
-
-
 if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     import debug_toolbar
     urlpatterns += [
         path('__debug__/', include(debug_toolbar.urls)),

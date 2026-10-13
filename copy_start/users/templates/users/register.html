@@ -3,17 +3,19 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Регистрация</title>
+    <title>Регистрация нового клиента</title>
     <link rel="stylesheet" href="{% static 'tovar/style.css' %}">
 </head>
 <body>
-    <h1>Регистрация</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Зарегистрироваться</button>
-    </form>
-    <br>
-    <a href="{% url 'login' %}">Уже есть аккаунт? Войти</a> | <a href="{% url 'home' %}">На главную</a>
+    <div style="padding: 20px; max-width: 600px; margin: auto;">
+        <h1>Регистрация нового клиента</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" style="background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">Зарегистрироваться</button>
+        </form>
+        <br>
+        <a href="{% url 'login' %}">Уже есть аккаунт? Войти</a> | <a href="{% url 'home' %}">На главную</a>
+    </div>
 </body>
 </html>
