@@ -4,63 +4,77 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ product.name }}</title>
+    <link rel="stylesheet" href="{% static 'tovar/style.css' %}">
 </head>
 <body>
-    <div>
-        <nav>
-            <a href="{% url 'home' %}">О нас</a> | 
-            <a href="{% url 'catalog' %}">Каталог</a> | 
-            <a href="{% url 'where_find_us' %}">Где нас найти?</a>
-            {% if request.user.is_authenticated %}
-                | <a href="{% url 'korzina' %}">Корзина</a>
-                | <a href="{% url 'logout' %}">Выход</a>
-            {% else %}
-                | <a href="{% url 'login' %}">Вход</a> | 
-                <a href="{% url 'register' %}">Регистрация</a>
-            {% endif %}
-        </nav>
-        <hr>
+    <header>
+        <div class="header-content">
+            <a href="{% url 'home' %}" class="logo">Copy Star</a>
+            <nav>
+                <a href="{% url 'about' %}">О нас</a>
+                <a href="{% url 'catalog' %}">Каталог</a>
+                <a href="{% url 'where_find_us' %}">Где нас найти?</a>
+                {% if request.user.is_authenticated %}
+                    <a href="{% url 'korzina' %}">Корзина</a>
+                    <a href="{% url 'logout' %}">Выход</a>
+                {% else %}
+                    <a href="{% url 'login' %}">Вход</a>
+                    <a href="{% url 'register' %}">Регистрация</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
 
-        <h1>{{ product.name }}</h1>
-        
-        {% if product.image %}
-            <img src="{{ product.image.url }}" alt="{{ product.name }}" width="300">
-        {% endif %}
+    <div class="container">
+        <div style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: var(--radius); padding: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: start;">
+            <div>
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 100%; border-radius: var(--radius); object-fit: cover;">
+                {% else %}
+                    <div style="width: 100%; height: 300px; background: #f1f5f9; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; color: var(--text-muted);">Нет фото</div>
+                {% endif %}
+            </div>
 
-        <p><strong>Описание:</strong> {{ product.description|default:"Нет описания" }}</p>
-        <p><strong>Цена:</strong> {{ product.price }} руб.</p>
-        <p><strong>В наличии:</strong> {{ product.count }} шт.</p>
-        
-        <h3>Характеристики:</h3>
-        <ul>
-            <li>Страна-производитель: {{ product.country|default:"Не указана" }}</li>
-            <li>Год выпуска: {{ product.year|default:"Не указан" }}</li>
-            <li>Модель: {{ product.model_name|default:"Не указана" }}</li>
-            {% if product.category %}
-                <li>Категория: {{ product.category.name }}</li>
-            {% endif %}
-        </ul>
+            <div>
+                <h1>{{ product.name }}</h1>
+                <div class="price" style="font-size: 28px; margin-bottom: 20px;">{{ product.price }} руб.</div>
+                
+                <p><strong>Описание:</strong> {{ product.description|default:"Нет описания" }}</p>
+                <p><strong>Остаток на складе:</strong> {{ product.count }} шт.</p>
+                
+                <h3 style="margin-top: 20px;">Характеристики:</h3>
+                <ul style="list-style: none; padding: 0; margin-bottom: 24px;">
+                    <li style="padding: 6px 0; border-bottom: 1px solid var(--border-color);">Страна-производитель: <strong>{{ product.country|default:"Не указана" }}</strong></li>
+                    <li style="padding: 6px 0; border-bottom: 1px solid var(--border-color);">Год выпуска: <strong>{{ product.year|default:"Не указан" }}</strong></li>
+                    <li style="padding: 6px 0; border-bottom: 1px solid var(--border-color);">Модель: <strong>{{ product.model_name|default:"Не указана" }}</strong></li>
+                    {% if product.category %}
+                        <li style="padding: 6px 0; border-bottom: 1px solid var(--border-color);">Категория: <strong>{{ product.category.name }}</strong></li>
+                    {% endif %}
+                </ul>
 
-        {% if messages %}
-            <ul>
-                {% for message in messages %}
-                    <li>{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
+                {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li {% if message.tags %}class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
 
-        {% if user.is_authenticated %}
-            <form action="{% url 'add_to_cart' product.id %}" method="post">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit">Добавить в корзину</button>
-            </form>
-        {% else %}
-            <p><a href="{% url 'login' %}">Войдите</a>, чтобы добавлять товар в корзину.</p>
-        {% endif %}
+                {% if user.is_authenticated %}
+                    <form action="{% url 'add_to_cart' product.id %}" method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit" style="width: 100%; margin-top: 10px;">Добавить в корзину</button>
+                    </form>
+                {% else %}
+                    <p><a href="{% url 'login' %}">Войдите</a>, чтобы добавлять товар в корзину.</p>
+                {% endif %}
+            </div>
+        </div>
 
-        <br>
-        <a href="{% url 'catalog' %}">Назад в каталог</a> | <a href="{% url 'home' %}">На главную</a>
+        <div style="margin-top: 30px;">
+            <a href="{% url 'catalog' %}" class="btn" style="background: #e2e8f0; color: var(--text-color); box-shadow: none;">← Назад в каталог</a>
+        </div>
     </div>
 </body>
 </html>
