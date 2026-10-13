@@ -4,10 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Корзина и Ваши заказы</title>
-    <link rel="stylesheet" href="{% static 'tovar/style.css' %}">
 </head>
 <body>
-    <div style="padding: 20px; max-width: 900px; margin: auto;">
+    <div>
         <nav>
             <a href="{% url 'home' %}">О нас</a> | 
             <a href="{% url 'catalog' %}">Каталог</a> | 
@@ -22,7 +21,7 @@
         <h1>Корзина пользователя: {{ request.user.username }}</h1>
 
         {% if messages %}
-            <ul style="color: red;">
+            <ul>
                 {% for message in messages %}
                     <li>{{ message }}</li>
                 {% endfor %}
@@ -30,7 +29,7 @@
         {% endif %}
 
         {% if items %}
-            <table border="1" cellpadding="8" style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+            <table border="1" cellpadding="5">
                 <tr>
                     <th>Товар</th>
                     <th>Цена</th>
@@ -66,17 +65,17 @@
             <form method="post" action="{% url 'checkout_order' %}">
                 {% csrf_token %}
                 {{ form.as_p }}
-                <button type="submit" style="background: #28a745; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">Сформировать заказ</button>
+                <button type="submit">Сформировать заказ</button>
             </form>
         {% else %}
             <p>Ваша корзина пуста.</p>
         {% endif %}
 
-        <hr style="margin: 40px 0;">
+        <hr>
 
         <h2>Ваши заказы</h2>
         {% if orders %}
-            <table border="1" cellpadding="8" style="width: 100%; border-collapse: collapse;">
+            <table border="1" cellpadding="5">
                 <tr>
                     <th>ID заказа</th>
                     <th>Дата / Время</th>
@@ -100,7 +99,7 @@
                         {% if order.status == 'new' %}
                             <form action="{% url 'delete_order' order.id %}" method="post">
                                 {% csrf_token %}
-                                <button type="submit" style="background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">Удалить</button>
+                                <button type="submit">Удалить</button>
                             </form>
                         {% else %}
                             <span>Нельзя удалить</span>

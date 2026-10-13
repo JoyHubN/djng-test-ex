@@ -4,10 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <title>{{ product.name }}</title>
-    <link rel="stylesheet" href="{% static 'tovar/style.css' %}">
 </head>
 <body>
-    <div style="padding: 20px;">
+    <div>
         <nav>
             <a href="{% url 'home' %}">О нас</a> | 
             <a href="{% url 'catalog' %}">Каталог</a> | 
@@ -25,7 +24,7 @@
         <h1>{{ product.name }}</h1>
         
         {% if product.image %}
-            <img src="{{ product.image.url }}" alt="{{ product.name }}" style="max-width: 400px; border-radius: 8px;">
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" width="300">
         {% endif %}
 
         <p><strong>Описание:</strong> {{ product.description|default:"Нет описания" }}</p>
@@ -43,7 +42,7 @@
         </ul>
 
         {% if messages %}
-            <ul style="color: red;">
+            <ul>
                 {% for message in messages %}
                     <li>{{ message }}</li>
                 {% endfor %}
@@ -51,10 +50,10 @@
         {% endif %}
 
         {% if user.is_authenticated %}
-            <form action="{% url 'add_to_cart' product.id %}" method="post" style="margin-top: 20px;">
+            <form action="{% url 'add_to_cart' product.id %}" method="post">
                 {% csrf_token %}
                 {{ form.as_p }}
-                <button type="submit" style="background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer;">Добавить в корзину</button>
+                <button type="submit">Добавить в корзину</button>
             </form>
         {% else %}
             <p><a href="{% url 'login' %}">Войдите</a>, чтобы добавлять товар в корзину.</p>
