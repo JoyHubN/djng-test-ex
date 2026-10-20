@@ -1,13 +1,31 @@
+from django.core.files.storage import default_storage
 from django.db import transaction
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import HttpRequest, HttpResponse
 from tovar.models import Product, KorzinaItem, Order, OrderItem
-from tovar.forms import TovarAdd, OrderCheckoutForm
+from tovar.forms import TovarAdd, OrderCheckoutForm, UploadFile
 
 def home_view(request: HttpRequest) -> HttpResponse:
     return render(request, 'tovar/home.html')
+
+
+
+def test_forms(request: HttpRequest) -> HttpResponse:
+    print(request.POST)
+    if request.method == 'POST':
+        form = UploadFile(request.POST, request.FILES)
+        if form.is_valid():
+            uploaded_file = request.FILES['document']
+            file_path = default_storage.save(uploaded_file.name, uploaded_file)
+            res = f'file saved {file_path}'
+            return render(request, 'tovar/test.html', {'form': form, 'suc':True, 'message': res}) 
+        else:
+            return render(request, 'tovar/test.html', {'form': form, 'suc':True, 'message': 'no valid'}) 
+    else:
+        form = UploadFile()
+    return render(request, 'tovar/test.html', {'form': form})
 
 def tovar_detail_view(request: HttpRequest, pk: int) -> HttpResponse:
     product = get_object_or_404(Product, pk=pk)

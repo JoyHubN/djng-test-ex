@@ -1,5 +1,6 @@
 from django.db import models
 from users.models import CustomUser
+from .validate import validate_file_size
 
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True, verbose_name="Название категории")
@@ -81,3 +82,20 @@ class OrderItem(models.Model):
     class Meta:
         verbose_name = 'Элемент заказа'
         verbose_name_plural = 'Элементы заказа'
+
+
+class Document(models.Model):
+    title = models.CharField(max_length=255, verbose_name="Название документа")
+    file = models.FileField(
+        upload_to='documents/',
+        validators=[validate_file_size],
+        verbose_name="Файл"
+    )
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = "Документ"
+        verbose_name_plural = "Документы"
+
