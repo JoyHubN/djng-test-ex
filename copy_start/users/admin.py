@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from users.models import CustomUser
-from tovar.models import KorzinaItem
+from shop.models import KorzinaItem
 
 class KorzinaItemInline(admin.TabularInline):
     model = KorzinaItem

@@ -1,0 +1,85 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Каталог товаров</title>
+    <link rel="stylesheet" href="{% static 'tovar/style.css' %}">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <a href="{% url 'home' %}" class="logo">Copy Star</a>
+            <nav>
+                <a href="{% url 'about' %}">О нас</a>
+                <a href="{% url 'catalog' %}" class="active">Каталог</a>
+                <a href="{% url 'where_find_us' %}">Где нас найти?</a>
+                {% if request.user.is_authenticated %}
+                    <a href="{% url 'korzina' %}">Корзина</a>
+                    <a href="{% url 'logout' %}">Выход</a>
+                {% else %}
+                    <a href="{% url 'login' %}">Вход</a>
+                    <a href="{% url 'register' %}">Регистрация</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+        <h1>Каталог оборудования</h1>
+
+        <form method="get" action="{% url 'catalog' %}" class="filter-bar">
+            <div class="filter-group">
+                <label for="category">Категория:</label>
+                <select name="category" id="category" onchange="this.form.submit()">
+                    <option value="">Все категории</option>
+                    {% for cat in categories %}
+                        <option value="{{ cat.id }}" {% if selected_category|stringformat:"s" == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="sort">Сортировка:</label>
+                <select name="sort" id="sort" onchange="this.form.submit()">
+                    <option value="-id" {% if current_sort == '-id' %}selected{% endif %}>По новизне (новые)</option>
+                    <option value="id" {% if current_sort == 'id' %}selected{% endif %}>По новизне (старые)</option>
+                    <option value="year" {% if current_sort == 'year' %}selected{% endif %}>По году производства (возр.)</option>
+                    <option value="-year" {% if current_sort == '-year' %}selected{% endif %}>По году производства (убыв.)</option>
+                    <option value="name" {% if current_sort == 'name' %}selected{% endif %}>По наименованию (А-Я)</option>
+                    <option value="-name" {% if current_sort == '-name' %}selected{% endif %}>По наименованию (Я-А)</option>
+                    <option value="price" {% if current_sort == 'price' %}selected{% endif %}>По цене (дешевые)</option>
+                    <option value="-price" {% if current_sort == '-price' %}selected{% endif %}>По цене (дорогие)</option>
+                </select>
+            </div>
+        </form>
+
+        <div class="grid">
+            {% for product in products %}
+                <div class="card">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="card-img">
+                    {% else %}
+                        <div class="card-img" style="display: flex; align-items: center; justify-content: center; color: var(--text-muted);">Нет фото</div>
+                    {% endif %}
+                    <div class="card-body">
+                        <h3 class="card-title"><a href="{% url 'tovar_detail' product.id %}">{{ product.name }}</a></h3>
+                        <div class="price">{{ product.price }} руб.</div>
+                        <p style="font-size: 14px; margin-bottom: 16px;">В наличии: <strong>{{ product.count }} шт.</strong></p>
+
+                        {% if request.user.is_authenticated %}
+                            <form action="{% url 'add_to_cart' product.id %}" method="post" style="margin-top: auto;">
+                                {% csrf_token %}
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" style="width: 100%;">В корзину</button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+            {% empty %}
+                <p>Товары в наличии отсутствуют.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

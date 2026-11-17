@@ -19,10 +19,12 @@ from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path
-from tovar.views import (
-    home_view,
-    test_forms, 
+from shop.views import (
+    home_view, 
+    about_view,
+    test_view,
+    where_find_us_view,
+    catalog_view,
     tovar_detail_view, 
     korzina_view, 
     add_to_cart_view, 
@@ -32,9 +34,6 @@ from tovar.views import (
     checkout_order_view,
     delete_order_view
 )
-from about.views import about_view
-from where_find_us.views import where_find_us_view
-from catalog.views import catalog_view
 from users.views import register_view, login_view, logout_view
 
 urlpatterns = [
@@ -51,9 +50,9 @@ urlpatterns = [
     path('korzina/remove/<int:item_id>/', remove_from_cart_view, name='remove_from_cart'),
     path('korzina/checkout/', checkout_order_view, name='checkout_order'),
     path('korzina/order/delete/<int:order_id>/', delete_order_view, name='delete_order'),
-    path('test/', test_forms, name='test'),
     path('register/', register_view, name='register'),
     path('login/', login_view, name='login'),
+    path('test/' , test_view, name='test'),
     path('logout/', logout_view, name='logout'),
 ]
 

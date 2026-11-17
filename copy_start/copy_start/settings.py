@@ -39,12 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'debug_toolbar',
     'rest_framework',
-    'about.apps.AboutConfig',
-    'catalog.apps.CatalogConfig',
-    'tovar.apps.TovarConfig',
-    'where_find_us.apps.WhereFindUsConfig',
+    'shop.apps.ShopConfig',
     'users.apps.UsersConfig',
-
 ]
 
 MIDDLEWARE = [
